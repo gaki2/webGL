@@ -60,9 +60,10 @@ function main() {
     let stride = 0;
     let offset = 0;
     gl.vertexAttribPointer(
-      positionLocation,
-      size,
-      type,
+      //데이터를 어떻게 가져올지 지정해주는 함수
+      positionLocation, // 데이터를 가져올 위치
+      size, // Array 에서 데이터를 몇개씩가져올지
+      type, // 데이터타입
       normalize,
       stride,
       offset
