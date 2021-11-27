@@ -1,4 +1,4 @@
-console.log("init!");
+console.log("isnit!");
 
 window.onload = init();
 
@@ -24,16 +24,7 @@ function createProgram(gl) {
     gl.shaderSource(fragmentShader, fragmentShaderText);
 
     gl.compileShader(vertexShader);
-    let compiled = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
-    console.log(compiled);
-    let compilationLog = gl.getShaderInfoLog(vertexShader);
-    console.log(compilationLog);
-
     gl.compileShader(fragmentShader);
-    let compiled2 = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
-    console.log(compiled2);
-    let compilationLog2 = gl.getShaderInfoLog(fragmentShader);
-    console.log(compilationLog2);
 
     const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
@@ -64,16 +55,16 @@ function draw(gl, program) {
         3,
         gl.FLOAT,
         gl.FALSE,
-        24,
+        6 * Float32Array.BYTES_PER_ELEMENT,
         0
     );
     gl.vertexAttribPointer(
         colorLocation,
-        2,
+        3,
         gl.FLOAT,
         gl.FALSE,
-        24,
-        12
+        6 * Float32Array.BYTES_PER_ELEMENT,
+        3 * Float32Array.BYTES_PER_ELEMENT
     )
 
     gl.enableVertexAttribArray(vertexPosLocation);
