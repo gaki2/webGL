@@ -1,3 +1,5 @@
+
+
 console.log("init!");
 
 window.onload = init();
@@ -6,11 +8,11 @@ function init() {
   const canvas = document.createElement("canvas");
   document.body.appendChild(canvas);
   const gl = canvas.getContext("webgl");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
+  canvas.width = 500;
+  canvas.height = 500;
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   const program = createProgram(gl);
-  draw(gl, program);
+  draw(canvas,gl, program);
 }
 
 function createProgram(gl) {
@@ -44,7 +46,7 @@ function createProgram(gl) {
 }
 
 
-function draw(gl, program) {
+function draw(canvas, gl, program) {
     let triangleVertex = [
         // X Y Z              R G B
         0.0, 0.5, 0.0,      1.0, 1.0, 0.0,
@@ -78,10 +80,32 @@ function draw(gl, program) {
 
     gl.enableVertexAttribArray(vertexPosLocation);
     gl.enableVertexAttribArray(colorLocation);
-
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     let matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
+    let matViewUniformLocation = gl.getUniformLocation(program, 'mView');
+    let matProjUniformLocation = gl.getUniformLocation(program,'mProj');
+
+    let worldMatrix = mat4();
+    let viewMatrix = lookAt([0,0,-3], [0,0,0], [0,1,0]); // view matrix 를 설정해도, projmatrix 를 설정하지 않으면 소용이 없다. 
+    let projMatrix = perspective(45, canvas.width / canvas.height, 0.1, 1000.0);
 
 
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // let worldMatrix = [1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1];
+    gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, flatten(worldMatrix));
+    gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, flatten(viewMatrix));
+    gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, flatten(projMatrix));
+    
+    //Main render loop
+    let angle = 0;
+    let loop = function() {
+        angle = performance.now() / 15 / 6 * 2 * Math.PI;
+        worldMatrix = rotate(angle, [0,1,0]);
+        gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, flatten(worldMatrix));
+        gl.clearColor(0.75, 0.85, 0.8, 1.0);
+        gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
 };

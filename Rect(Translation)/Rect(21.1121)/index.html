@@ -23,7 +23,7 @@
 
         void main() {
             v_color = a_color;
-            gl_Position = vec4(a_position, 1.0);
+            gl_Position =  mProj * mView * mWorld * vec4(a_position, 1.0);
         }
         
     </script>
@@ -34,7 +34,7 @@
             gl_FragColor = vec4(v_color, 1.0);
         }
     </script>
+    <script src="./utils/MV.js"></script>
     <script src="webgl.js"></script>
-    <script src="./utils/gl-matrix.js"></script>
 </body>
 </html>
